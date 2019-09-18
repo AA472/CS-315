@@ -1,0 +1,64 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct node node;
+struct node{
+     node* p;
+};
+//node is a vertex
+void make_set(node* x){
+    x->p = x;
+}
+node* find_set(node* x){
+    node* root = x;
+    while(x->p!=root)
+        root = x->p;
+
+    return root;
+
+}
+void link(node* v, node* w){
+    w->p = v;
+}
+void union_sets(node* v, node* w){
+    link(find_set(v),find_set(w));
+}
+
+
+int main()
+{
+    int i,j,k;  // looping index
+    int graphs;
+    scanf("%d",&graphs); // take in number of graphs
+
+    for(k=0; k<graphs;k++){
+        int n, e;    // number of vertices and edges
+        int v, w; // pairs of vertices that define the edges
+        node* forest; //make array of vertices
+        scanf("%d %d",&n,&e); // take in lengths
+        forest = (node*) malloc(n*sizeof(node)); //allocate memory
+        for(i=1;i<n+1;i++){ //take in all vertices
+            make_set(&(forest[i-1]));
+        }
+        for(i=0; i<e; i++){
+            scanf("%d %d",&v,&w); // take in pair
+            union_sets(&(forest[v-1]),&(forest[w-1]));
+        }
+
+        // output:
+        printf("[ ");
+        for(i=0;i<n;i++){
+            if(&forest[i] == (find_set(&(forest[i])))){
+                printf("[");
+                for(j=0;j<n;j++){
+                    if((find_set(&(forest[j]))) == &forest[i])
+                        printf("%d ",(j+1));
+                }
+            printf("]");
+            }
+        }
+        printf(" ]\n");
+        free(forest);
+    }
+    return 0;
+}
